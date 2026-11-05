@@ -1,36 +1,49 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# The Fed Up Buddies
 
-## Getting Started
+Blog de sátira e opinião (en) do ecossistema Arthur & Nico. Projetos-irmãos, em repositórios separados: *Os Saco Cheio* e *Los Hartos*.
 
-First, run the development server:
+Next.js 16 (App Router, Cache Components) + Tailwind 4. Um site por repositório, um schema por site.
 
+| | |
+|---|---|
+| Idioma | en |
+| Domínio (proposta — verificar e registrar) | fedupbuddies.com |
+| Schema no Supabase central | `blog_fedupbuddies` (proposta — confirmar no provisionamento) |
+| Rotas | article `/{slug}` · topic `/topic/{slug}` · author `/author/{slug}` · search `/search` |
+
+## Rodar localmente
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm install
+npm run build
+npm run start
+```
+Abra http://localhost:3000.
+
+## Estrutura
+```
+proxy.ts                 domínio do blog → app/[site]; /health e /admin em qualquer host; resto 404
+lib/sites.ts             configuração, domínio, rotas e textos de interface
+lib/content/*.ts         categorias, autores (personagens fictícios), artigos iniciais, páginas institucionais
+lib/repo.ts              camada de dados (hoje: conteúdo local; próximo passo: schema do projeto via DATABASE_URL)
+lib/markdown.ts          Markdown → HTML (HTML bruto escapado, links filtrados)
+lib/articles/validate.ts regras editoriais compartilhadas (API e admin)
+components/              capa SVG gerada, carrossel, cards, cabeçalho/rodapé, tema claro/escuro
+app/[site]/              home, artigo/página/tema/autor/busca, 404, sitemap.xml, robots.txt, feed.xml
+app/health               validação da plataforma (HTTP 200)
+app/api/v1/articles      API de ingestão — será religada ao schema do projeto
+supabase/inspect_schema.sql   levantamento somente leitura do schema provisionado
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Deploy (Easypanel / VPS)
+- Build por **Dockerfile** (`output: "standalone"`), porta 3000, healthcheck em `/health`.
+- Variáveis **apenas** no Environment do serviço (nunca no repositório): `DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_ANON_KEY`, `CONTROL_TOWER_*`, `AUTHORITY_*_TOKEN`, `SITE_URL=https://fedupbuddies.com`.
+- Banco: operar **somente** no schema `blog_fedupbuddies`. Nada no `public` nem em `auth`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Pendências
+- [ ] Rodar `supabase/inspect_schema.sql` no schema provisionado e adaptar `lib/repo.ts` às tabelas do template `blog_standard`.
+- [ ] Área administrativa com usuários próprios (`blog_fedupbuddies.users`, senha com hash, papéis admin/editor).
+- [ ] Religar a API de ingestão ao schema (hoje responde 503 sem configuração).
+- [ ] Etapa Zero do AdSense: diretrizes oficiais atuais **não consultadas** — pendente de validação.
+- [ ] Ampliar o lote editorial (hoje: 4 artigos) antes de pedir AdSense; aprovação nunca é garantida.
+- [ ] Preencher os marcadores `[INSERIR …]` / `[INSERT …]` / `[INSERTAR …]` das páginas institucionais.
+- [ ] Trocar as capas SVG por artes reais quando houver.

@@ -1,26 +1,163 @@
 @import "tailwindcss";
 
+/* ── Tokens da marca (docs/02-identidade-de-marca.md) ─────────────────────── */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  --ink: #0e0f11;
+  --steel: #2b2e33;
+  --concrete: #8a8f98;
+  --paper: #eceae4;
+  --alert: #ffd60a;
+  --fail: #d7263d;
+  --blueprint: #2f6fdb;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Tema claro */
+  --bg: #f4f2ec;
+  --surface: #ffffff;
+  --surface-2: #e7e4dc;
+  --text: #121315;
+  --muted: #4c5058;
+  --line: #121315;
+  --accent: var(--alert);
+  --accent-ink: #121315;
+  --shadow: #121315;
+  color-scheme: light;
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  :root:not([data-theme="light"]) {
+    --bg: var(--ink);
+    --surface: #17191c;
+    --surface-2: var(--steel);
+    --text: var(--paper);
+    --muted: #a7acb4;
+    --line: #3a3e45;
+    --shadow: #000000;
+    color-scheme: dark;
   }
 }
 
+:root[data-theme="dark"] {
+  --bg: var(--ink);
+  --surface: #17191c;
+  --surface-2: var(--steel);
+  --text: var(--paper);
+  --muted: #a7acb4;
+  --line: #3a3e45;
+  --shadow: #000000;
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-surface-2: var(--surface-2);
+  --color-text: var(--text);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-alert: var(--alert);
+  --color-fail: var(--fail);
+  --color-blueprint: var(--blueprint);
+  --color-ink: var(--ink);
+  --color-paper: var(--paper);
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-anton), Impact, "Arial Narrow", sans-serif;
+  --font-mono: var(--font-jetbrains), ui-monospace, monospace;
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* Assinatura "3° fora do prumo" — usar em UM elemento por bloco */
+.tilt-3 {
+  transform: rotate(3deg);
+}
+
+.hazard {
+  background: repeating-linear-gradient(-45deg, var(--alert) 0 14px, var(--ink) 14px 28px);
+}
+
+/* Neobrutalismo suave */
+.brutal {
+  border: 2px solid var(--line);
+  box-shadow: 4px 4px 0 var(--shadow);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.brutal-hover:hover,
+.brutal-hover:focus-within {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--shadow);
+}
+@media (prefers-reduced-motion: reduce) {
+  .brutal,
+  .brutal-hover:hover {
+    transition: none;
+    transform: none;
+  }
+}
+
+:focus-visible {
+  outline: 3px solid var(--alert);
+  outline-offset: 2px;
+}
+
+/* Tipografia do artigo */
+.prose-sc {
+  font-size: 1.125rem;
+  line-height: 1.75;
+}
+.prose-sc > * + * {
+  margin-top: 1.1em;
+}
+.prose-sc h2 {
+  font-family: var(--font-display);
+  font-size: 1.9rem;
+  line-height: 1.15;
+  letter-spacing: 0.01em;
+  margin-top: 1.8em;
+  text-transform: uppercase;
+  scroll-margin-top: 5rem;
+}
+.prose-sc h3 {
+  font-weight: 800;
+  font-size: 1.3rem;
+  margin-top: 1.5em;
+}
+.prose-sc a {
+  text-decoration: underline;
+  text-decoration-color: var(--alert);
+  text-decoration-thickness: 3px;
+  text-underline-offset: 3px;
+}
+.prose-sc ul,
+.prose-sc ol {
+  padding-left: 1.4em;
+}
+.prose-sc ul {
+  list-style: square;
+}
+.prose-sc ol {
+  list-style: decimal;
+}
+.prose-sc li + li {
+  margin-top: 0.4em;
+}
+.prose-sc strong {
+  font-weight: 800;
+}
+.prose-sc em {
+  font-style: italic;
+}
+.prose-sc blockquote {
+  border-left: 6px solid var(--alert);
+  padding-left: 1rem;
+  font-style: italic;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  scrollbar-width: none;
 }

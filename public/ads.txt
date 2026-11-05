@@ -1,0 +1,4 @@
+# ads.txt — PREENCHER SOMENTE após aprovação no Google AdSense.
+# Copie a linha exata fornecida pelo painel do AdSense (com o seu ID de publisher real), por exemplo:
+# google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0
+# Nunca publique um ID inventado. Enquanto vazio, este arquivo contém apenas comentários.
