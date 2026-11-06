@@ -1,10 +1,10 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { siteFromHost } from "./lib/sites";
+import { SITE } from "./lib/sites";
 
 /**
- * O domínio do blog (e localhost em desenvolvimento) é reescrito internamente para /{site}/...
- * /health e /admin respondem em qualquer host, inclusive no domínio técnico da plataforma.
- * Qualquer outro host recebe 404.
+ * Este repositório publica um único blog: qualquer host (domínio próprio, domínio técnico da
+ * plataforma, IP da rede, localhost) é reescrito internamente para /{site}/...
+ * O SEO não é afetado: canonical, sitemap e Open Graph usam sempre SITE_URL (domínio oficial).
  */
 const PER_SITE_FILES = new Set(["/sitemap.xml", "/robots.txt", "/feed.xml", "/manifest.webmanifest"]);
 
@@ -16,16 +16,16 @@ export function proxy(request: NextRequest) {
     res.headers.set("X-Robots-Tag", "noindex, nofollow");
     return res;
   }
+  const url = request.nextUrl.clone();
+  if (pathname === "/favicon.ico") {
+    url.pathname = `/icon-${SITE.id}.svg`;
+    return NextResponse.rewrite(url);
+  }
   // Arquivos estáticos de /public (ads.txt, ícones…) passam direto
   if (/\.[a-z0-9]+$/i.test(pathname) && !PER_SITE_FILES.has(pathname)) {
     return NextResponse.next();
   }
-  const site = siteFromHost(request.headers.get("host"));
-  if (!site) {
-    return new NextResponse("Not found", { status: 404, headers: { "X-Robots-Tag": "noindex" } });
-  }
-  const url = request.nextUrl.clone();
-  url.pathname = `/${site}${pathname === "/" ? "" : pathname}`;
+  url.pathname = `/${SITE.id}${pathname === "/" ? "" : pathname}`;
   return NextResponse.rewrite(url);
 }
 

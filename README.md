@@ -21,7 +21,7 @@ Abra http://localhost:3000.
 
 ## Estrutura
 ```
-proxy.ts                 domínio do blog → app/[site]; /health e /admin em qualquer host; resto 404
+proxy.ts                 qualquer host → app/[site] (canonical sempre em SITE_URL); /favicon.ico → ícone do blog
 lib/sites.ts             configuração, domínio, rotas e textos de interface
 lib/content/*.ts         categorias, autores (personagens fictícios), artigos iniciais, páginas institucionais
 lib/repo.ts              camada de dados (hoje: conteúdo local; próximo passo: schema do projeto via DATABASE_URL)

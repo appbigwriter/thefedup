@@ -130,14 +130,7 @@ export function getSite(id: string): SiteConfig {
   return isSiteId(id) ? SITES[id] : SITE;
 }
 
-const DEV_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);
-
-/**
- * Domínio → site. Hosts desconhecidos (ex.: o domínio técnico da plataforma) retornam null:
- * lá só respondem /health e /admin. localhost serve o blog em desenvolvimento.
- */
-export function siteFromHost(host: string | null): SiteId | null {
-  const clean = (host ?? "").split(":")[0].toLowerCase();
-  if (SITE.hosts.includes(clean) || DEV_HOSTS.has(clean)) return SITE.id;
-  return null;
+/** Mantido por compatibilidade: o blog responde em qualquer host (ver proxy.ts). */
+export function siteFromHost(_host: string | null): SiteId {
+  return SITE.id;
 }
